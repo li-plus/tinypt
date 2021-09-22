@@ -1,0 +1,15 @@
+# ide
+.vscode/
+.idea/
+
+# build
+build/
+cmake-build-debug/
+
+# python
+__pycache__/
+*.egg-info/
+/dist/
+
+# project
+/resource
