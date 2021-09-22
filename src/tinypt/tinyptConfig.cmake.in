@@ -1,0 +1,23 @@
+include(CMakeFindDependencyMacro)
+
+@PACKAGE_INIT@
+
+set(TINYPT_ENABLE_CUDA @TINYPT_ENABLE_CUDA@)
+
+# OpenMP
+find_dependency(OpenMP REQUIRED)
+
+# Eigen
+find_dependency(Eigen3 3.3 REQUIRED NO_MODULE)
+
+# OpenCV
+find_dependency(OpenCV REQUIRED)
+
+# CUDA
+if (TINYPT_ENABLE_CUDA)
+    #enable_language(CUDA)
+    find_dependency(CUDA REQUIRED)
+    #include_directories(${CUDA_INCLUDE_DIRS})
+endif ()
+
+include("${CMAKE_CURRENT_LIST_DIR}/tinyptTargets.cmake")

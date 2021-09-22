@@ -1,0 +1,33 @@
+set(TINYPT_SRCS cpu/path_tracer.cpp cpu/object.cpp cpu/bvh.cpp cpu/light.cpp cpu/material.cpp
+        cpu/distribution.cpp cpu/texture.cpp cpu/image.cpp cpu/camera.cpp cpu/scene.cpp cpu/mapping.cpp)
+if (TINYPT_ENABLE_CUDA)
+    list(APPEND TINYPT_SRCS cuda/path_tracer_kernel.cu cuda/path_tracer.cpp)
+    cuda_add_library(tinypt STATIC ${TINYPT_SRCS})
+else ()
+    add_library(tinypt STATIC ${TINYPT_SRCS})
+endif ()
+target_link_libraries(tinypt tinyobjloader Eigen3::Eigen glog OpenMP::OpenMP_CXX ${OpenCV_LIBS})
+
+option(TINYPT_ENABLE_PYBIND "" OFF)
+if (TINYPT_ENABLE_PYBIND)
+    set_target_properties(tinypt PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+    set_target_properties(tinyobjloader PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+    set(EXTENSION_NAME _C)
+    pybind11_add_module(${EXTENSION_NAME} pybind.cpp)
+    target_link_libraries(${EXTENSION_NAME} PRIVATE tinypt)
+    # set RPATH to $ORIGIN to prevent import error
+    # ref: https://github.com/pybind/cmake_example/issues/11
+    set_target_properties(${EXTENSION_NAME} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+    set_target_properties(${EXTENSION_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN")
+    set_target_properties(${EXTENSION_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif ()
+
+if (TINYPT_ENABLE_TEST)
+    file(GLOB TINYPT_TEST_FILES cpu/*_test.cpp)
+    foreach (TINYPT_TEST_FILE ${TINYPT_TEST_FILES})
+        get_filename_component(TINYPT_TEST_NAME ${TINYPT_TEST_FILE} NAME_WE)
+        add_executable(${TINYPT_TEST_NAME} ${TINYPT_TEST_FILE})
+        target_link_libraries(${TINYPT_TEST_NAME} tinypt gtest_main)
+        gtest_discover_tests(${TINYPT_TEST_NAME})
+    endforeach ()
+endif ()
