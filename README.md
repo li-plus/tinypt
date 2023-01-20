@@ -35,8 +35,8 @@ bash resource/get_resource.sh
 Build the project.
 
 ```sh
-mkdir -p build && cd build
-cmake .. && make -j
+cmake -B build .
+cmake --build build -j
 ```
 
 Render an example scene with two spheres in a box, which is taken from [smallpt](https://www.kevinbeason.com/smallpt/).

@@ -2,12 +2,14 @@
 
 set -e
 
-# cpp
 root_dir=$(dirname $(realpath $0))/..
-cd $root_dir/build
-cmake ..
-make format
+
+# cpp
+cd $root_dir
+cmake -B build .
+cmake --build build --target format
 
 # python
 cd $root_dir/python
-autopep8 -i -a -r .
+isort .
+black .

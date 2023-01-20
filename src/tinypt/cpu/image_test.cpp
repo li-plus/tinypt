@@ -12,7 +12,9 @@ TEST(Image, Image) {
     fs::path proj_root = fs::path(__FILE__).parent_path().parent_path().parent_path().parent_path();
     {
         auto img_path = proj_root / "resource/envmap/venice_sunset_4k.hdr";
-        ASSERT_TRUE(fs::exists(img_path));
+        if (!fs::exists(img_path)) {
+            GTEST_SKIP() << "skipping test since image does not exist";
+        }
         auto rgba = Image::open(img_path, false);
         EXPECT_TRUE(!rgba.rgb().empty());
         EXPECT_EQ(rgba.rgb().channels(), 3);
@@ -21,7 +23,9 @@ TEST(Image, Image) {
     }
     {
         auto img_path = proj_root / "resource/fireplace_room/textures/leaf.png";
-        ASSERT_TRUE(fs::exists(img_path));
+        if (!fs::exists(img_path)) {
+            GTEST_SKIP() << "skipping test since image does not exist";
+        }
         auto rgba = Image::open(proj_root / "resource/fireplace_room/textures/leaf.png", false);
         EXPECT_TRUE(!rgba.rgb().empty());
         EXPECT_EQ(rgba.rgb().channels(), 3);
