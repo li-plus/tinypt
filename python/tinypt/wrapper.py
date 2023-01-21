@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 from PIL import ImageColor
 
-from tinypt import _C
+import tinypt._C as _C
 
 
 def _parse_color(color):

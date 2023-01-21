@@ -9,7 +9,9 @@ cmake-build-debug/
 # python
 __pycache__/
 *.egg-info/
-/dist/
+dist/
+*.whl
+*.so
 
 # project
 /resource

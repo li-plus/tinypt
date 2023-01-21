@@ -1,4 +1,3 @@
-from tinypt.version import VERSION
 from tinypt.wrapper import (
     Camera,
     Circle,
@@ -17,7 +16,7 @@ from tinypt.wrapper import (
     TriangleMesh,
 )
 
-__version__ = VERSION
+__version__ = "0.0.1"
 
 __all__ = [
     "PathTracer",
