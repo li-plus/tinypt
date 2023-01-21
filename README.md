@@ -35,8 +35,8 @@ bash resource/get_resource.sh
 Build the project.
 
 ```sh
-mkdir -p build && cd build
-cmake .. && make -j
+cmake -B build .
+cmake --build build -j
 ```
 
 Render an example scene with two spheres in a box, which is taken from [smallpt](https://www.kevinbeason.com/smallpt/).
@@ -47,17 +47,23 @@ Render an example scene with two spheres in a box, which is taken from [smallpt]
 
 **Python API**
 
-A Python API is also available for TinyPT. Run the following script to build and install the Python package.
+Python binding is also available for TinyPT. To build and install the Python package for development, run:
 
 ```sh
-bash python/build.sh
+cd python/
+python3 setup.py develop
 ```
 
 Run a Python example.
 
 ```sh
-cd python/examples
-python3 main.py --device cuda --num-samples 1000 --save-path scene.png --scene cornell_sphere
+python3 examples/main.py --device cuda --num-samples 1000 --save-path scene.png --scene cornell_sphere
+```
+
+To build the wheel for distribution, run:
+
+```sh
+python3 setup.py bdist_wheel
 ```
 
 **Docker**
@@ -75,12 +81,11 @@ bash run.sh tinypt:latest
 Following scenes are credited to [smallpt](https://www.kevinbeason.com/smallpt/) and [McGuire Computer Graphics Archive](https://casual-effects.com/data/).
 
 ![cornell_sphere](docs/fig/cornell_sphere.png)
-![cornell_box](docs/fig/cornell_box.png)
-![fireplace_room](docs/fig/fireplace_room.png)
-![rungholt](docs/fig/rungholt.png)
-![dabrovic_sponza](docs/fig/dabrovic_sponza.png)
-![salle_de_bain](docs/fig/salle_de_bain.png)
-![living_room](docs/fig/living_room.png)
+
+| ![cornell_box](docs/fig/cornell_box.png)         | ![salle_de_bain](docs/fig/salle_de_bain.png) |
+| ------------------------------------------------ | -------------------------------------------- |
+| ![fireplace_room](docs/fig/fireplace_room.png)   | ![rungholt](docs/fig/rungholt.png)           |
+| ![dabrovic_sponza](docs/fig/dabrovic_sponza.png) | ![living_room](docs/fig/living_room.png)     |
 
 ## References
 

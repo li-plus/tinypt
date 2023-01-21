@@ -1,16 +1,18 @@
 import warnings
+
 import numpy as np
 from PIL import ImageColor
-from tinypt import _C
+
+import tinypt._C as _C
 
 
 def _parse_color(color):
     if isinstance(color, str):
-        if color.startswith('#'):
+        if color.startswith("#"):
             color = ImageColor.getrgb(color)
-            color = tuple((x / 255.) ** 2.2 for x in color)
+            color = tuple((x / 255.0) ** 2.2 for x in color)
         else:
-            raise RuntimeError('not implemented')
+            raise RuntimeError("not implemented")
 
     return _parse_vec3f(color)
 
@@ -18,14 +20,14 @@ def _parse_color(color):
 def _parse_vec2f(v):
     arr = np.asarray(v, dtype=np.float32)
     if arr.shape != (2,):
-        raise RuntimeError(f'Invalid Vec2f {v}')
+        raise RuntimeError(f"Invalid Vec2f {v}")
     return arr
 
 
 def _parse_vec3f(v):
     arr = np.array(v, dtype=np.float32)
     if arr.shape != (3,):
-        raise RuntimeError(f'Invalid Vec3f {v}')
+        raise RuntimeError(f"Invalid Vec3f {v}")
     return arr
 
 
@@ -47,7 +49,7 @@ class Object3d(object):
 
 
 class PathTracer(object):
-    def __init__(self, device='cpu') -> None:
+    def __init__(self, device="cpu") -> None:
         self._obj = _C.PathTracer(device)
 
     def render(self, scene, num_samples):
@@ -55,7 +57,9 @@ class PathTracer(object):
 
 
 class Scene(object):
-    def __init__(self, camera, objects=[], lights=None, background=None, obj=None) -> None:
+    def __init__(
+        self, camera, objects=[], lights=None, background=None, obj=None
+    ) -> None:
         if obj is not None:
             self._obj = obj
             return
@@ -65,8 +69,7 @@ class Scene(object):
         if lights is None:
             lights = []
         native_lights = [x._obj for x in lights]
-        self._obj = _C.Scene(camera._obj, native_objs,
-                             native_lights, background._obj)
+        self._obj = _C.Scene(camera._obj, native_objs, native_lights, background._obj)
 
     def to(self, device):
         return Scene(camera=None, obj=self._obj.to(device))
@@ -98,7 +101,9 @@ class Camera(object):
 
 
 class Sphere(Object3d):
-    def __init__(self, radius, location, surface=None, emission=None, alpha=None, bump=None) -> None:
+    def __init__(
+        self, radius, location, surface=None, emission=None, alpha=None, bump=None
+    ) -> None:
         self._obj = _C.Sphere()
         self._obj.radius = float(radius)
         self._obj.location = _parse_vec3f(location)
@@ -114,8 +119,16 @@ class Sphere(Object3d):
 
 
 class Rectangle(Object3d):
-    def __init__(self, location=None, rotation=None, dimension=None,
-                 surface=None, emission=None, alpha=None, bump=None) -> None:
+    def __init__(
+        self,
+        location=None,
+        rotation=None,
+        dimension=None,
+        surface=None,
+        emission=None,
+        alpha=None,
+        bump=None,
+    ) -> None:
         self._obj = _C.Rectangle()
         if location is not None:
             self._obj.location = _parse_vec3f(location)
@@ -144,8 +157,16 @@ class Rectangle(Object3d):
 
 
 class Circle(Object3d):
-    def __init__(self, radius=1, location=None, rotation=None, surface=None,
-                 emission=None, alpha=None, bump=None) -> None:
+    def __init__(
+        self,
+        radius=1,
+        location=None,
+        rotation=None,
+        surface=None,
+        emission=None,
+        alpha=None,
+        bump=None,
+    ) -> None:
         self._obj = _C.Circle()
         self._obj.radius = radius
         if location is None:
@@ -192,7 +213,8 @@ class RGBTexture(object):
         if image is not None:
             if color is not None:
                 warnings.warn(
-                    'both color and image are specified, using image as texture')
+                    "both color and image are specified, using image as texture"
+                )
             self._obj.map = _C.Image(image)
         elif color is not None:
             self._obj.value = _parse_color(color)
